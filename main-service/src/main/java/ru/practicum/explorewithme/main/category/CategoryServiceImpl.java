@@ -23,9 +23,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public Category updateCategory(Category categoryDto) {
-        categoryRepository.findById(categoryDto.getId()).orElseThrow(() ->
-            new NotFoundException(categoryDto.getId().toString()));
-        return categoryRepository.save(categoryDto);
+        if (categoryRepository.existsById(categoryDto.getId()))
+            return categoryRepository.save(categoryDto);
+        else throw new NotFoundException("NotFoundException CategoryServiceImpl updateCategory, id: " +
+            categoryDto.getId());
     }
 
     @Override
@@ -35,14 +36,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findById(Long id) {
-        categoryRepository.findById(id).orElseThrow(() -> new NotFoundException(id.toString()));
-        return categoryRepository.findCategoryById(id);
+        return categoryRepository.findById(id).orElseThrow(() ->
+            new NotFoundException("NotFoundException CategoryServiceImpl findById, id: " + id));
     }
 
     @Override
     @Transactional
     public void deleteCategoryById(Long id) {
-        categoryRepository.findById(id).orElseThrow(() -> new NotFoundException(id.toString()));
-        categoryRepository.deleteById(id);
+        if (categoryRepository.existsById(id))
+            categoryRepository.deleteById(id);
+        else throw new NotFoundException("NotFoundException CategoryServiceImpl deleteCategoryById, id: " + id);
     }
 }

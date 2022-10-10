@@ -164,7 +164,10 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     private EventShortDto mapEventToShortDto(Event event) {
-        Category category = categoryRepository.findCategoryById(event.getCategory());
+        Long id = event.getCategory();
+        Category category = categoryRepository.findById(id).orElseThrow(() ->
+            new NotFoundException("NotFoundException CompilationServiceImpl EventShortDto, id: "
+                + id));
         User user = userRepository.getReferenceById(event.getInitiator());
 
         return MapperEvent.mapEventToShortDto(event, category, user);

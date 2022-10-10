@@ -414,13 +414,17 @@ public class EventServiceImpl implements EventService {
     }
 
     private EventDto mapEventToFullDto(Event event) {
-        Category categoryDto = categoryRepository.findCategoryById(event.getCategory());
+        Long id = event.getCategory();
+        Category categoryDto = categoryRepository.findById(id).orElseThrow(() ->
+            new NotFoundException("NotFoundException EventServiceImpl mapEventToFullDto, id: " + id));
         User userDto = userRepository.getReferenceById(event.getInitiator());
         return MapperEvent.mapEventToEventDto(event, categoryDto, userDto);
     }
 
     private EventShortDto mapEventToShortDto(Event event) {
-        Category category = categoryRepository.findCategoryById(event.getCategory());
+        Long id = event.getCategory();
+        Category category = categoryRepository.findById(id).orElseThrow(() ->
+            new NotFoundException("NotFoundException EventServiceImpl mapEventToShortDto, id: " + id));
         User user = userRepository.getReferenceById(event.getInitiator());
         return MapperEvent.mapEventToShortDto(event, category, user);
     }
