@@ -11,14 +11,4 @@ public class StatService {
     public static void main(String[] args) {
         SpringApplication.run(StatService.class, args);
     }
-
-    @Bean
-    public ModelMapper modelMapper() {
-        ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration()
-            .setMatchingStrategy(MatchingStrategies.STRICT)
-            .setFieldMatchingEnabled(true)
-            .setSkipNullEnabled(true);
-        return mapper;
-    }
 }
