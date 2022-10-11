@@ -24,9 +24,10 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public Request addNew(Long userId, Long eventId) {
-
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId.toString()));
-        eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(eventId.toString()));
+        if (! userRepository.existsById(userId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl addNew, userId: " + userId);
+        if (! eventRepository.existsById(eventId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl addNew, eventId: " + eventId);
 
         if (requestRepository.existsByEventIdAndUserId(userId, eventId)) {
             throw new ValidationException("Запрос уже был отправлен");
@@ -71,7 +72,8 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<Request> getAllRequestsByUser(Long userId) {
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId.toString()));
+        if (! userRepository.existsById(userId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl getAllRequestsByUser, userId: " + userId);
         List<Request> requestDtoList = requestRepository.findRequestByRequester(userId);
 
         if (requestDtoList.isEmpty()) {
@@ -84,8 +86,10 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public Request cancel(Long userId, Long requestId) {
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId.toString()));
-        requestRepository.findById(requestId).orElseThrow(() -> new NotFoundException(requestId.toString()));
+        if (! userRepository.existsById(userId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl cancel, userId: " + userId);
+        if (! requestRepository.existsById(requestId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl cancel, requestId: " + requestId);
 
         Request requestDto = requestRepository.getReferenceById(requestId);
 
@@ -112,9 +116,10 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<Request> getRequests(Long userId, Long eventId) {
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId.toString()));
-        eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(eventId.toString()));
-
+        if (! userRepository.existsById(userId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl getRequests, userId: " + userId);
+        if (! eventRepository.existsById(eventId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl getRequests, eventId: " + eventId);
         Event event = eventRepository.getReferenceById(eventId);
 
         if (!event.getInitiator().equals(userId)) {

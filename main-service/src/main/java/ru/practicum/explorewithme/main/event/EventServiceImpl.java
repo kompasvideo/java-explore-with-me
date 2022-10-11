@@ -47,9 +47,11 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("Недопустимая длина слова");
         }
 
-        categoryRepository.findById(eventParamDto.getCategory()).orElseThrow(() ->
-            new NotFoundException(eventParamDto.getCategory().toString()));
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId.toString()));
+        if (! userRepository.existsById(userId))
+            throw new NotFoundException("EventServiceImpl addEvent, userId: " + userId);
+        Long categoryId = eventParamDto.getCategory();
+        if (! categoryRepository.existsById(categoryId))
+            throw new NotFoundException("EventServiceImpl addEvent, categoryId: " + categoryId);
 
         Event event = eventRepository.save(MapperEvent.mapEventParamDtoToEvent(eventParamDto, userId));
 
@@ -58,7 +60,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventShortDto> getEvents(Long userId, Integer from, Integer size) {
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId.toString()));
+        if (! userRepository.existsById(userId))
+            throw new NotFoundException("EventServiceImpl updateEvent, userId: " + userId);
 
         List<EventShortDto> eventShorts = eventRepository
                 .findAllByInitiator(userId, PageRequest.of(from, size))
@@ -72,9 +75,11 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventDto updateEvent(Long userId, UpdateEventRequest updateEventRequest) {
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId.toString()));
-        eventRepository.findById(updateEventRequest.getEventId()).orElseThrow(() ->
-            new NotFoundException(updateEventRequest.getEventId().toString()));
+        if (! userRepository.existsById(userId))
+            throw new NotFoundException("EventServiceImpl updateEvent, userId: " + userId);
+        Long eventId = updateEventRequest.getEventId();
+        if (! eventRepository.existsById(eventId))
+            throw new NotFoundException("EventServiceImpl updateEvent, eventId: " + eventId);
 
         Event event = eventRepository.getReferenceById(updateEventRequest.getEventId());
 
@@ -144,8 +149,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDto getEvent(Long userId, Long eventId) {
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId.toString()));
-        eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(eventId.toString()));
+        if (! userRepository.existsById(userId))
+            throw new NotFoundException("EventServiceImpl getEvent, userId: " + userId);
+        if (! eventRepository.existsById(eventId))
+            throw new NotFoundException("EventServiceImpl getEvent, eventId: " + eventId);
 
         Event event = eventRepository.getReferenceById(eventId);
 
@@ -159,8 +166,10 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventDto cancelEvent(Long userId, Long eventId) {
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId.toString()));
-        eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(eventId.toString()));
+        if (! userRepository.existsById(userId))
+            throw new NotFoundException("EventServiceImpl cancelEvent, userId: " + userId);
+        if (! eventRepository.existsById(eventId))
+            throw new NotFoundException("EventServiceImpl cancelEvent, eventId: " + eventId);
 
         Event event = eventRepository.getReferenceById(eventId);
 
@@ -255,7 +264,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDto getEven(Long id, HttpServletRequest request) {
-        eventRepository.findById(id).orElseThrow(() -> new NotFoundException(id.toString()));
+        if (! eventRepository.existsById(id))
+            throw new NotFoundException("EventServiceImpl getEven, eventId: " + id);
 
         BooleanExpression onlyPublicEvents = QEvent.event.state.eq(EventState.PUBLISHED);
 
@@ -381,7 +391,8 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventDto publish(Long eventId) {
-        eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(eventId.toString()));
+        if (! eventRepository.existsById(eventId))
+            throw new NotFoundException("EventServiceImpl publish, eventId: " + eventId);
 
         Event event = eventRepository.getReferenceById(eventId);
 
@@ -402,7 +413,8 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventDto reject(Long eventId) {
-        eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(eventId.toString()));
+        if (! eventRepository.existsById(eventId))
+            throw new NotFoundException("EventServiceImpl reject, eventId: " + eventId);
         Event event = eventRepository.getReferenceById(eventId);
 
         if (!event.getState().equals(EventState.PENDING)) {

@@ -38,7 +38,9 @@ public class CompilationServiceImpl implements CompilationService {
         List<Long> events = compilationDto.getEvents();
 
         for (Long event : events) {
-            eventRepository.findById(event).orElseThrow(() -> new NotFoundException(event.toString()));
+            if (! eventRepository.existsById(event))
+                throw new NotFoundException("NotFoundException CompilationServiceImpl addCompilation, eventId"
+                       + event);
         }
 
         Compilation compilation = compilationRepository.save(Compilation.builder()
@@ -70,7 +72,9 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public void deleteCompilation(Long compId) {
-        compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException(compId.toString()));
+        if (! compilationRepository.existsById(compId))
+            throw new NotFoundException("NotFoundException CompilationServiceImpl deleteCompilation, compId: "
+            + compId);
 
         compilationEventRepository.deleteAllById(compilationEventRepository.findAllByCompilationId(compId));
         compilationRepository.deleteById(compId);
@@ -79,8 +83,11 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public void deleteById(Long compId, Long eventId) {
-        eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(eventId.toString()));
-        compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException(compId.toString()));
+        if (! eventRepository.existsById(eventId))
+            throw new NotFoundException("NotFoundException CompilationServiceImpl deleteById, eventId: " + eventId);
+        if (! compilationRepository.existsById(compId))
+            throw new NotFoundException("NotFoundException CompilationServiceImpl deleteById, compId: "
+                    + compId);
 
         if (!compilationEventRepository.existsByEventCompilationId(eventId, compId)) {
             throw new NotFoundException("Не найдено событие в подборке");
@@ -94,8 +101,11 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public void addEvent(Long compId, Long eventId) {
-        eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(eventId.toString()));
-        compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException(compId.toString()));
+        if (! eventRepository.existsById(eventId))
+            throw new NotFoundException("NotFoundException CompilationServiceImpl addEvent, eventId: " + eventId);
+        if (! compilationRepository.existsById(compId))
+            throw new NotFoundException("NotFoundException CompilationServiceImpl addEvent, compId: "
+                    + compId);
 
         if (compilationEventRepository.existsByEventCompilationId(eventId, compId)) {
             throw new NotFoundException("Событие уже добавлено в подборку");
@@ -107,7 +117,9 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public void unpin(Long compId) {
-        compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException(compId.toString()));
+        if (! compilationRepository.existsById(compId))
+            throw new NotFoundException("NotFoundException CompilationServiceImpl unpin, compId: "
+                    + compId);
         Compilation compilationDto = compilationRepository.getReferenceById(compId);
 
         if (!compilationDto.getPinned()) {
@@ -121,7 +133,9 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public void pin(Long compId) {
-        compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException(compId.toString()));
+        if (! compilationRepository.existsById(compId))
+            throw new NotFoundException("NotFoundException CompilationServiceImpl pin, compId: "
+                    + compId);
         Compilation compilationDto = compilationRepository.getReferenceById(compId);
 
         if (compilationDto.getPinned()) {
@@ -156,7 +170,9 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public Compilation findById(Long compId) {
-        compilationRepository.findById(compId).orElseThrow(() -> new NotFoundException(compId.toString()));
+        if (! compilationRepository.existsById(compId))
+            throw new NotFoundException("NotFoundException CompilationServiceImpl findById, compId: "
+                    + compId);
         Compilation compilationDto = compilationRepository.findCompilationById(compId);
         fillCompilation(compilationDto);
 
