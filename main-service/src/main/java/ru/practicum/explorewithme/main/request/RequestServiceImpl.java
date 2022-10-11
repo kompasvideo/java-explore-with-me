@@ -138,9 +138,12 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public Request confirm(Long userId, Long eventId, Long reqId) {
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId.toString()));
-        eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(eventId.toString()));
-        requestRepository.findById(reqId).orElseThrow(() -> new NotFoundException(reqId.toString()));
+        if (! userRepository.existsById(userId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl confirm, userId: " + userId);
+        if (! eventRepository.existsById(eventId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl confirm, eventId: " + eventId);
+        if (! requestRepository.existsById(reqId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl confirm, requestId: " + reqId);
 
         Event event = eventRepository.getReferenceById(eventId);
 
@@ -187,9 +190,12 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public Request reject(Long userId, Long eventId, Long reqId) {
-        userRepository.findById(userId).orElseThrow(() -> new NotFoundException(userId.toString()));
-        eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(eventId.toString()));
-        requestRepository.findById(reqId).orElseThrow(() -> new NotFoundException(reqId.toString()));
+        if (! userRepository.existsById(userId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl reject, userId: " + userId);
+        if (! eventRepository.existsById(eventId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl reject, eventId: " + eventId);
+        if (! requestRepository.existsById(reqId))
+            throw new NotFoundException("NotFoundException RequestServiceImpl reject, requestId: " + reqId);
 
         Request requestDto = requestRepository.getReferenceById(reqId);
 
