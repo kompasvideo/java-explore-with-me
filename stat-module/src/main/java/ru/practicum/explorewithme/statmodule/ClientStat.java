@@ -15,6 +15,7 @@ public class ClientStat {
     private String url;
     private String api = "/hit";
 
+
     public void post(String app, String remoteAddr, String requestURI) {
         HttpEntity<StatData> httpEntity = new HttpEntity<>(StatData.builder()
             .app(app)
