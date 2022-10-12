@@ -24,10 +24,11 @@ public class EventAdminController {
                                @RequestParam(required = false) List<Long> categories,
                                @RequestParam(required = false) @FutureOrPresent LocalDateTime rangeStart,
                                @RequestParam(required = false) @Future LocalDateTime rangeEnd,
+                               @RequestParam(required = false) String locationName,
                                @RequestParam(defaultValue = "0") Integer from,
                                @RequestParam(defaultValue = "10") Integer size) {
         log.info("Получение расширенного списка событий с помощью фильтра");
-        return eventService.find(users, states, categories, rangeStart, rangeEnd, from, size);
+        return eventService.find(users, states, categories, rangeStart, rangeEnd, locationName, from, size);
     }
 
     @PutMapping("/admin/events/{eventId}")

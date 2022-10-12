@@ -31,12 +31,13 @@ public class EventController {
                                       @RequestParam(required = false) @Future LocalDateTime rangeEnd,
                                       @RequestParam(defaultValue = "false") Boolean onlyAvailable,
                                       @RequestParam String sort,
+                                      @RequestParam(required = false) String locationName,
                                       @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                       @RequestParam(defaultValue = "10") @Positive Integer size,
                                       HttpServletRequest request) {
         log.info("Получение короткого списка событий с помощью фильтра");
         return eventService.getAll(text, categories, paid, rangeStart,
-            rangeEnd, onlyAvailable, sort, from, size, request);
+            rangeEnd, onlyAvailable, sort, locationName, from, size, request);
     }
 
     @GetMapping("/events/{eventId}")

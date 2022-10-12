@@ -17,11 +17,14 @@ public interface EventService {
 
     EventDto cancelEvent(Long userId, Long eventId);
 
-    List<EventShortDto> getAll(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size, HttpServletRequest request);
+    List<EventShortDto> getAll(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
+                               LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, String locationName,
+                               Integer from, Integer size, HttpServletRequest request);
 
     EventDto getEven(Long id, HttpServletRequest request);
 
-    List<EventDto> find(List<Long> users, List<String> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
+    List<EventDto> find(List<Long> users, List<String> states, List<Long> categories, LocalDateTime rangeStart,
+                        LocalDateTime rangeEnd, String locationName, Integer from, Integer size);
 
     EventDto change(Long eventId, AdminUpdateEventDto eventDto);
 
