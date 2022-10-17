@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface LocationRepository extends JpaRepository<Location, Long> {
     Location findByNameIgnoreCase(String locationName);
+
     Boolean existsByNameIgnoreCase(String name);
 
     @Query(nativeQuery = true,
