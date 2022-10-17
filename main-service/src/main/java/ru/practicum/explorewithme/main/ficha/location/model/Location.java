@@ -1,4 +1,4 @@
-package ru.practicum.explorewithme.main.ficha.specificlocation.model;
+package ru.practicum.explorewithme.main.ficha.location.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "locations")
 @Setter
 @Getter
-public class SpecificLocation {
+public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

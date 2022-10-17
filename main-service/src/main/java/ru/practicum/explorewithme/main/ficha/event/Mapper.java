@@ -12,7 +12,7 @@ import java.util.List;
 public class Mapper {
 
     public static EventDto mapEventToFullDto(Event event, Category categoryDto,
-                                             User userDto, List<String> nearestLocations) {
+                                             User userDto, List<String> locations) {
         return EventDto.builder()
             .annotation(event.getAnnotation())
             .category(categoryDto)
@@ -30,7 +30,7 @@ public class Mapper {
             .state(event.getState())
             .title(event.getTitle())
             .views(event.getViews())
-            .nearestLocations(nearestLocations)
+            .nearestLocations(locations)
             .build();
     }
 

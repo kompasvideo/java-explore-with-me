@@ -12,9 +12,9 @@ import ru.practicum.explorewithme.main.category.CategoryRepository;
 import ru.practicum.explorewithme.main.exception.NotFoundException;
 import ru.practicum.explorewithme.main.exception.ValidationException;
 import ru.practicum.explorewithme.main.event.model.*;
-import ru.practicum.explorewithme.main.ficha.event.EventFichaServiceImpl;
+import ru.practicum.explorewithme.main.ficha.event.EventFichaService;
 import ru.practicum.explorewithme.main.ficha.event.Mapper;
-import ru.practicum.explorewithme.main.ficha.specificlocation.SpecificLocationRepository;
+import ru.practicum.explorewithme.main.ficha.location.LocationRepository;
 import ru.practicum.explorewithme.main.mappers.MapperEvent;
 import ru.practicum.explorewithme.main.user.model.User;
 import ru.practicum.explorewithme.main.user.UserRepository;
@@ -34,9 +34,9 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final StatModule statModule;
 
-    private final EventFichaServiceImpl eventFichaService;
+    private final EventFichaService eventFichaService;
 
-    private final SpecificLocationRepository specificLocationRepository;
+    private final LocationRepository locationRepository;
 
     @Override
     @Transactional
@@ -304,7 +304,7 @@ public class EventServiceImpl implements EventService {
                                Integer from, Integer size) {
         BooleanExpression basedExpression = QEvent.event.paid.eq(true).or(QEvent.event.paid.eq(false));
 
-        basedExpression = eventFichaService.getBooleanExpression2(basedExpression, locationName);
+        basedExpression = eventFichaService.getBooleanExpression(basedExpression, locationName);
 
         if (rangeStart != null) {
             basedExpression = basedExpression.and(QEvent.event.eventDate
@@ -447,7 +447,7 @@ public class EventServiceImpl implements EventService {
         Category categoryDto = categoryRepository.findById(id).orElseThrow(() ->
             new NotFoundException("NotFoundException EventServiceImpl mapEventToFullDto, id: " + id));
         User userDto = userRepository.getReferenceById(event.getInitiator());
-        List<String> nearestLocations = specificLocationRepository
+        List<String> nearestLocations = locationRepository
             .findNearestLocation(event.getLon(), event.getLat());
 
         return Mapper.mapEventToFullDto(event, categoryDto, userDto, nearestLocations);

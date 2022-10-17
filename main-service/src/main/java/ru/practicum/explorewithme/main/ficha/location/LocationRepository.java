@@ -1,18 +1,14 @@
-package ru.practicum.explorewithme.main.ficha.specificlocation;
+package ru.practicum.explorewithme.main.ficha.location;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.explorewithme.main.ficha.specificlocation.model.SpecificLocation;
+import ru.practicum.explorewithme.main.ficha.location.model.Location;
 
 import java.util.List;
 
-public interface SpecificLocationRepository extends JpaRepository<SpecificLocation, Long> {
-    @Query("select case when (count(l)) > 0 then true else false end " +
-        "from SpecificLocation l " +
-        "where l.name = ?1")
-    Boolean existsByName(String name);
-
-    SpecificLocation findSpecificLocationByName(String locationName);
+public interface LocationRepository extends JpaRepository<Location, Long> {
+    Location findByNameIgnoreCase(String locationName);
+    Boolean existsByNameIgnoreCase(String name);
 
     @Query(nativeQuery = true,
         value = "select t.name from (" +
